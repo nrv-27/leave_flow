@@ -1,0 +1,12 @@
+import express from 'express';
+import { applyLeave, getMyLeaves, getTeamLeaves, updateLeaveStatus, getLeaveImpactPreview, getSuggestedDays } from '../controllers/leaveController.js';
+import { protect, managerOnly } from '../middleware/auth.js';
+const router = express.Router();
+router.use(protect);
+router.post('/apply', applyLeave);
+router.get('/my', getMyLeaves);
+router.get('/impact-preview', getLeaveImpactPreview);
+router.get('/suggestions', getSuggestedDays);
+router.get('/team', managerOnly, getTeamLeaves);
+router.patch('/:id/status', managerOnly, updateLeaveStatus);
+export default router;

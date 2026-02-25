@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: leave-system-mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: leave-system
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: leave-system-backend
+    ports:
+      - '5000:5000'
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/leave-system
+      - JWT_SECRET=change_this_in_production
+      - JWT_REFRESH_SECRET=change_this_refresh_secret
+      - CLIENT_URL=http://localhost:5173
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: leave-system-frontend
+    ports:
+      - '5173:80'
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:

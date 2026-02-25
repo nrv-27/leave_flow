@@ -1,0 +1,10 @@
+import express from 'express';
+import { checkIn, checkOut, getAttendanceReport, getTodayStatus } from '../controllers/attendanceController.js';
+import { protect } from '../middleware/auth.js';
+const router = express.Router();
+router.use(protect);
+router.post('/checkin', checkIn);
+router.post('/checkout', checkOut);
+router.get('/today', getTodayStatus);
+router.get('/report', getAttendanceReport);
+export default router;
